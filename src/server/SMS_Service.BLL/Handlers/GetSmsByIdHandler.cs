@@ -28,9 +28,7 @@ namespace SMS_Service.BLL.Handlers
 			if (sms == null)
 				throw new NotFoundException($"Sms with given id: {request.Id} not found");
 
-			_mapper.Map<SmsDto>(sms)
-
-			return ;
+			return _mapper.Map<SmsDto>(sms);
 		}
 	}
 }

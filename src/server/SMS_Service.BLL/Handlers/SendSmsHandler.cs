@@ -46,11 +46,11 @@ namespace SMS_Service.BLL.Handlers
 		private async Task SendSmsAsync(SmsDto sms, CancellationToken cancellationToken)
 		{
 			var endpoint = await _bus.GetSendEndpoint(new Uri("queue:send-sms"));
-			var sendingTasks = sms.Receivers.Select(receiverNumber => endpoint.Send(new SendSms
+			var sendingTasks = sms.Receivers.Select(receiverInfo => endpoint.Send(new SendSms
 			{
 				Id = sms.Id,
 				From = sms.From,
-				To = receiverNumber
+				To = receiverInfo.ReceiverNumber
 			}, cancellationToken));
 
 			await Task.WhenAll(sendingTasks);

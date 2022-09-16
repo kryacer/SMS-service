@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using SMS_Service.Common.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SMS_Service.DAL.Entities
 {
@@ -11,5 +12,7 @@ namespace SMS_Service.DAL.Entities
 		public Guid SmsId { get; set; }
 
 		public string ReceiverNumber { get; set; }
+
+		public SmsStatus DeliveryStatus { get; set; }
 	}
 }

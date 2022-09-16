@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SMS_Service.BLL.AssemblyMarker;
+using SMS_Service.BLL.Consumers;
 using SMS_Service.DAL;
 using SMS_Service.DAL.Infrastructure;
 
@@ -35,18 +36,22 @@ namespace SMS_Service.BLL.Extensions
 		{
             services.AddMassTransit(x =>
             {
+                x.AddConsumers(typeof(IAssemblyMarker).Assembly);
                 x.SetKebabCaseEndpointNameFormatter();
 
                 x.UsingRabbitMq((ctx, cfg) =>
                 {
 
-                    cfg.Host("localhost", "/", h =>
+                    cfg.Host("host.docker.internal", "/", h =>
                     {
                         h.Username("guest");
                         h.Password("guest");
                     });
 
-                    cfg.ConfigureEndpoints(ctx);
+                    cfg.ReceiveEndpoint("update-status", e =>
+                    {
+                        e.ConfigureConsumer<UpdateSmsStatusConsumer>(ctx);
+                    });
                 });
             });
 

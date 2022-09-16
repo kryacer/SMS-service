@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SMS_Service.DAL.Entities
 {
-	[Table("SMS")]
+	[Table("SMSs")]
 	public class SMS
     {
         [Key]
@@ -15,9 +15,6 @@ namespace SMS_Service.DAL.Entities
 
         [Required]
         public string Content { get; set; }
-
-        [Required]
-        public SmsStatus Status { get; set; }
 
 		public ICollection<Receiver> Receivers { get; set; }
 	}

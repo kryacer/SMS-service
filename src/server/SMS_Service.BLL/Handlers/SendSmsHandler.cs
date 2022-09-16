@@ -3,6 +3,7 @@ using MassTransit;
 using MediatR;
 using SMS_Service.BLL.Commands;
 using SMS_Service.BLL.DataContracts;
+using SMS_Service.Common.Enums;
 using SMS_Service.Common.Messages;
 using SMS_Service.DAL.Entities;
 using SMS_Service.DAL.Infrastructure;
@@ -26,6 +27,12 @@ namespace SMS_Service.BLL.Handlers
 		{
 			var sms = _mapper.Map<SMS>(request);
 
+			sms.Receivers = request.To.Distinct().Select(t => new Receiver { 
+				SmsId = sms.Id, 
+				ReceiverNumber = t,
+				DeliveryStatus = SmsStatus.Queued
+			}).ToList();
+
 			_applicationContext.SMSs.Add(sms);
 			await _applicationContext.SaveChangesAsync(cancellationToken);
 
@@ -38,7 +45,8 @@ namespace SMS_Service.BLL.Handlers
 
 		private async Task SendSmsAsync(SmsDto sms, CancellationToken cancellationToken)
 		{
-			var sendingTasks = sms.Receivers.Select(receiverNumber => _bus.Send(new SendSms
+			var endpoint = await _bus.GetSendEndpoint(new Uri("queue:send-sms"));
+			var sendingTasks = sms.Receivers.Select(receiverNumber => endpoint.Send(new SendSms
 			{
 				Id = sms.Id,
 				From = sms.From,

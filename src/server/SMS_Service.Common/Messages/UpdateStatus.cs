@@ -6,6 +6,8 @@ namespace SMS_Service.Common.Messages
 	{
 		public Guid SmsId { get; set; }
 
+		public string PhoneNumber { get; set; }
+
 		public SmsStatus Status { get; set; }
 	}
 }

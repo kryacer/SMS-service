@@ -15,6 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(IAssemblyMarker).Assembly);
 builder.Services.AddMassTransit();
+builder.Services.AddMediatR();
 
 var app = builder.Build();
 

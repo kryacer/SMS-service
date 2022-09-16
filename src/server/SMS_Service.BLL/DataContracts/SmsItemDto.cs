@@ -1,6 +1,4 @@
-﻿using SMS_Service.Common.Enums;
-
-namespace SMS_Service.BLL.DataContracts
+﻿namespace SMS_Service.BLL.DataContracts
 {
 	public class SmsItemDto
 	{
@@ -8,8 +6,6 @@ namespace SMS_Service.BLL.DataContracts
 
 		public string From { get; set; }
 
-		public string[] Receivers { get; set; }
-
-		public SmsStatus Status { get; set; }
+		public ReceiverInfo[] Receivers { get; set; }
 	}
 }

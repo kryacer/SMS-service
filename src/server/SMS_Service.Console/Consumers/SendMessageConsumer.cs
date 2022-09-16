@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SMS_Service.Console.Consumers
 {
-	internal class SendMessageConsumer : IConsumer<SendSms>
+	public class SendMessageConsumer : IConsumer<SendSms>
 	{
 		private readonly ILogger<SendMessageConsumer> _logger;
 		private readonly IBus _bus;
@@ -34,7 +34,13 @@ namespace SMS_Service.Console.Consumers
 				smsStatus = SmsStatus.Failed;
 			}
 
-			await _bus.Send(new UpdateStatus{ SmsId = context.Message.Id, Status = smsStatus });
+			var endpoint = await _bus.GetSendEndpoint(new Uri("queue:update-status"));
+			await endpoint.Send(new UpdateStatus
+			{
+				SmsId = context.Message.Id, 
+				PhoneNumber = context.Message.To, 
+				Status = smsStatus 
+			});
 		}
 	}
 }

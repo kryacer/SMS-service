@@ -10,8 +10,6 @@ namespace SMS_Service.BLL.DataContracts
 
         public string Content { get; set; }
 
-        public string[] Receivers { get; set; }
-
-        public SmsStatus Status { get; set; }
+        public ReceiverInfo[] Receivers { get; set; }
     }
 }

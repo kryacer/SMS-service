@@ -24,13 +24,13 @@ namespace SMS_Service.API.Controllers
 		{
 			var sms = await _mediator.Send(command, cancellationToken);
 
-			return CreatedAtAction(nameof(GetByIdAsync), sms.Id, sms);
+			return CreatedAtAction(nameof(GetSmsById), new { sms.Id }, sms);
 		}
 
 		[HttpGet("{id}")]
 		[ProducesDefaultResponseType(typeof(SmsDto))]
 		[ProducesResponseType(typeof(ErrorDetail), StatusCodes.Status404NotFound)]
-		public async Task<SmsDto> GetByIdAsync([FromRoute] Guid id, CancellationToken cancellationToken)
+		public async Task<SmsDto> GetSmsById(Guid id, CancellationToken cancellationToken)
 		{
 			return await _mediator.Send(new GetSmsByIdQuery(id), cancellationToken);
 		}

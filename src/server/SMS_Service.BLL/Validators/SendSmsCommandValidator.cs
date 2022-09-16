@@ -14,7 +14,8 @@ namespace SMS_Service.BLL.Validators
 
 			RuleFor(x => x.To)
 				.Cascade(CascadeMode.Stop)
-				.Required();
+				.Required()
+				.ForEach(t => t.IsPhoneNumber());
 
 			RuleFor(x => x.Content)
 				.Cascade(CascadeMode.Stop)

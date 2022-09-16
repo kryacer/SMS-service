@@ -6,7 +6,7 @@ using SMS_Service.DAL.Infrastructure;
 
 namespace SMS_Service.BLL.Consumers
 {
-	internal class UpdateSmsStatusConsumer : IConsumer<UpdateStatus>
+	public class UpdateSmsStatusConsumer : IConsumer<UpdateStatus>
 	{
 		private readonly IApplicationContext _applicationContext;
 
@@ -22,7 +22,7 @@ namespace SMS_Service.BLL.Consumers
 			if (sms == null)
 				throw new NotFoundException($"Sms with given id: {context.Message.SmsId} not found");
 
-			sms.Status = context.Message.Status;
+			sms.Receivers.Single(x => x.ReceiverNumber == context.Message.PhoneNumber).DeliveryStatus = context.Message.Status;
 
 			await _applicationContext.SaveChangesAsync();
 		}

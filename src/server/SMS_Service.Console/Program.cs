@@ -28,7 +28,7 @@ namespace SMS_Service.Console
 
                         x.UsingRabbitMq((ctx, cfg) =>
 						{
-                            cfg.Host("host.docker.internal", "/", h =>
+                            cfg.Host("localhost", "/", h =>
                             {
                                 h.Username("guest");
                                 h.Password("guest");

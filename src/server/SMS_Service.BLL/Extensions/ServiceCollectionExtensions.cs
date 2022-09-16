@@ -1,10 +1,14 @@
-﻿using MassTransit;
+﻿using FluentValidation;
+using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SMS_Service.BLL.AssemblyMarker;
+using SMS_Service.BLL.Commands;
 using SMS_Service.BLL.Consumers;
+using SMS_Service.BLL.Queries;
+using SMS_Service.BLL.Validators;
 using SMS_Service.DAL;
 using SMS_Service.DAL.Infrastructure;
 
@@ -42,7 +46,7 @@ namespace SMS_Service.BLL.Extensions
                 x.UsingRabbitMq((ctx, cfg) =>
                 {
 
-                    cfg.Host("host.docker.internal", "/", h =>
+                    cfg.Host("localhost", "/", h =>
                     {
                         h.Username("guest");
                         h.Password("guest");
@@ -56,6 +60,12 @@ namespace SMS_Service.BLL.Extensions
             });
 
             return services;
+        }
+
+        public static void AddValidators(this IServiceCollection services)
+		{
+            services.AddScoped<IValidator<GetAllSmsQuery>, GetAllSmsQueryValidator>();
+            services.AddScoped<IValidator<SendSmsCommand>, SendSmsCommandValidator>();
         }
     }
 }

@@ -24,7 +24,7 @@ namespace SMS_Service.BLL.Handlers
 
 		public async Task<SmsListDto> Handle(GetAllSmsQuery request, CancellationToken cancellationToken)
 		{
-			var queryable = _applicationContext.SMSs.AsQueryable();
+			var queryable = _applicationContext.SMSs.Include(x => x.Receivers).AsQueryable();
 
 			var count = await queryable.CountAsync();
 

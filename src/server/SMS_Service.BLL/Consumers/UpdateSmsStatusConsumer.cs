@@ -17,7 +17,9 @@ namespace SMS_Service.BLL.Consumers
 
 		public async Task Consume(ConsumeContext<UpdateStatus> context)
 		{
-			var sms = await _applicationContext.SMSs.SingleOrDefaultAsync(x => x.Id == context.Message.SmsId);
+			var sms = await _applicationContext.SMSs
+				.Include(x => x.Receivers)
+				.SingleOrDefaultAsync(x => x.Id == context.Message.SmsId);
 
 			if (sms == null)
 				throw new NotFoundException($"Sms with given id: {context.Message.SmsId} not found");

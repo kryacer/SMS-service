@@ -46,7 +46,7 @@ namespace SMS_Service.BLL.Extensions
                 x.UsingRabbitMq((ctx, cfg) =>
                 {
 
-                    cfg.Host("localhost", "/", h =>
+                    cfg.Host("host.docker.internal", "/", h =>
                     {
                         h.Username("guest");
                         h.Password("guest");

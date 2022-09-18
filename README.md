@@ -8,6 +8,8 @@
 docker-compose up
 ```
 
+- Then open http://localhost:5000/swagger
+
 In case of failure some commands for running manually:
 
 ```sh

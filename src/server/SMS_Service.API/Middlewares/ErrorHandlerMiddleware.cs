@@ -1,4 +1,7 @@
-﻿using SMS_Service.BLL.Exceptions;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using SMS_Service.BLL.Exceptions;
+using SMS_Service.DAL.Infrastructure;
+using System.Data;
 using System.Net;
 using System.Text.Json;
 
@@ -10,24 +13,40 @@ namespace SMS_Service.API.Middlewares
         private readonly IWebHostEnvironment _env;
         private readonly ILogger<ErrorHandlerMiddleware> _logger;
 
-        public ErrorHandlerMiddleware(RequestDelegate next, IWebHostEnvironment env, ILogger<ErrorHandlerMiddleware> logger)
+        public ErrorHandlerMiddleware(RequestDelegate next, 
+            IWebHostEnvironment env, 
+            ILogger<ErrorHandlerMiddleware> logger)
         {
             _next = next;
             _env = env;
             _logger = logger;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext httpContext, IApplicationContext applicationContext)
         {
+            IDbContextTransaction transaction = null;
+
             try
             {
-                await _next(context);
+                if(httpContext.Request.Method.Equals("GET", StringComparison.CurrentCultureIgnoreCase))
+                    await _next(httpContext);
+				else
+				{
+                    transaction = await applicationContext.Database.BeginTransactionAsync();
+
+                    await _next(httpContext);
+
+                    await transaction.CommitAsync();
+                }
             }
             catch (Exception error)
             {
+                if (transaction != null)
+                    await transaction.RollbackAsync();
+
                 _logger.LogError(error, error.Message);
 
-                var response = context.Response;
+                var response = httpContext.Response;
                 response.ContentType = "application/json";
 
                 switch (error)
